@@ -1,6 +1,10 @@
 import numpy as np
+from pyvis.network import Network
+import random
+import string
 
 def undirected_unweighted_graph(vertex_names: set):
+    print("Undirected Unweighted Graph Generation from Given set of Vertices \n\t 0 : for no edge between vertices \n\t 1 : for presence of edge between vertices \n")
     graph = {vertex: {neighbor: 0 for neighbor in vertex_names if neighbor != vertex} for vertex in vertex_names}
     arevertices = set()
 
@@ -13,10 +17,12 @@ def undirected_unweighted_graph(vertex_names: set):
                 graph[v2][morty] = graph[morty][v2]
                 arevertices.add((morty, v2))
                 arevertices.add((v2, morty))
+    
+    matrix = graph_to_matrix(graph, vertex_names)
 
-    return graph
+    return graph, matrix, arevertices
 
-def graph_to_matrix(graph: dict, vertex_names: list):
+def graph_to_matrix(graph: dict, vertex_names: set):
     matrix = np.zeros((len(vertex_names), len(vertex_names)))
 
     for i, key1 in enumerate(vertex_names):
@@ -30,23 +36,29 @@ def graph_to_matrix(graph: dict, vertex_names: list):
     return matrix
 
 def generate_random_graph():
-    vertices = set()
+    random_vertices = set()
     no_V = int(input("Number of Vertices : "))
     for i in range(no_V):
         random_alphabet = random.choice(string.ascii_uppercase)
-        vertices.add(random_alphabet)
-        graph = undirected_unweighted_graph(vertices)
-    return graph, vertices
+        random_vertices.add(random_alphabet)
+        graph = undirected_unweighted_graph(random_vertices)
+        matrix = graph_to_matrix(graph, random_vertices)
+    return graph, matrix, random_vertices
+
+def visualize_graph(graph: dict, vertex_names: set):
+
+    net = Network()
+    for v1, e1 in graph.items():
+        for v2, e2 in e1.items():
+            net.add_node()
 
 
-# if __name__ == "__main__":
-#     vertex_names = ["A", "B", "C", "D"]
-#     graph = undirected_unweighted_graph(vertex_names)
-#     adjacency_matrix = graph_to_matrix(graph, vertex_names)
-#
-#     print("Graph:")
-#     print(graph)
-#     print("\nAdjacency Matrix:")
-#     print(adjacency_matrix)
+if __name__ == "__main__":
+    vertex_names = {"A", "B", "C", "D"}
+    undirected_graph, matrix_form, set_vertices = undirected_unweighted_graph(vertex_names)
+    Random_graph, adjacency_matrix, random_vertices = generate_random_graph()
+
+    
+    print(f"{undirected_graph} \n {matrix_form} \n {set_vertices}")
 
 
